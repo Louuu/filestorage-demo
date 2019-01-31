@@ -39,7 +39,12 @@ class FilesController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        if ($request->hasFile('upload')){
+            $file = $request->file('upload');
+
+            $filename = $request->file('upload')->getClientOriginalName();
+            Storage::put('', $file);
+        }
     }
 
     /**
