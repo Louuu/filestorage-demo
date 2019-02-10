@@ -43,8 +43,10 @@ class FilesController extends Controller
             $file = $request->file('upload');
 
             $filename = $request->file('upload')->getClientOriginalName();
-            Storage::put('', $file);
+            Storage::putFileAs('', $file, $filename);
+
         }
+        return back();
     }
 
     /**
