@@ -8,6 +8,9 @@
         "storageAccountName": {
             "value": "lbstorage1204"
         },
+        "storageContainerName": {
+            "value": "appstorage"
+        },
         "hostingPlanName": {
             "value": "lbhosting1204"
         },
