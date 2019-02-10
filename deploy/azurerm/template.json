@@ -16,6 +16,9 @@
         },
         "webAppName": {
             "type": "string"
+        },
+        "webConfigName": {
+            "type": "string"
         }
     },
     "variables": {},
@@ -63,7 +66,20 @@
             "apiVersion": "2016-03-01",
             "properties":{
                 "name": "[parameters('webAppName')]",
-                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('hostingPlanName'))]",
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('hostingPlanName'))]"
+            },
+            "location": "[parameters('globalResourceLocation')]",
+            "dependsOn": [
+                "[concat('Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/config",
+            "name": "[concat(parameters('webAppName'), '/', parameters('webConfigName'))]",
+            "apiVersion": "2016-08-01",
+            "location": "UK West",
+            "scale": null,
+            "properties":{
                 "virtualApplications": [
                     {
                         "virtualPath": "/",
@@ -73,15 +89,14 @@
                     },
                     {
                         "virtualPath": "/deploy",
-                        "physicalPath": "site\\wwwroot",
+                        "physicalPath": "site\\wwwroot\\",
                         "preloadEnabled": false,
                         "virtualDirectories": null
                     }
                 ]
             },
-            "location": "[parameters('globalResourceLocation')]",
             "dependsOn": [
-                "[concat('Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]"
+                "[concat('Microsoft.Web\/sites\/', parameters('webAppName'))]"
             ]
         }
     ],
