@@ -1,0 +1,89 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "globalResourceLocation": {
+            "type": "string"
+        },
+        "storageAccountName": {
+            "type": "string"
+        },
+        "storageContainerName": {
+            "type": "string"
+        },
+        "hostingPlanName": {
+            "type": "string"
+        },
+        "webAppName": {
+            "type": "string"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "name": "[parameters('storageAccountName')]",
+            "type": "Microsoft.Storage/storageAccounts",
+            "apiVersion": "2018-07-01",
+            "location": "[parameters('globalResourceLocation')]",
+            "properties": {
+                "accessTier": "Hot",
+                "supportsHttpsTrafficOnly": false
+            },
+            "sku":{
+                "name": "Standard_LRS"
+            },
+            "kind":"BlobStorage",
+            "resources": [
+                {
+                    "name": "[concat('default/', parameters('storageContainerName'))]",
+                    "type": "blobServices/containers",
+                    "apiVersion": "2018-03-01-preview",
+                    "dependsOn": [
+                        "[parameters('storageAccountName')]"
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "[parameters('hostingPlanName')]",
+            "type": "Microsoft.Web/serverfarms",
+            "apiVersion": "2016-09-01",
+            "location": "[parameters('globalResourceLocation')]",
+            "properties": {
+                "name": "[parameters('hostingPlanName')]"
+            },
+            "sku":{
+                "tier": "Free",
+                "name": "F1"
+            }
+        },
+        {
+            "name": "[parameters('webAppName')]",
+            "type": "Microsoft.Web/sites",
+            "apiVersion": "2016-03-01",
+            "properties":{
+                "name": "[parameters('webAppName')]",
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('hostingPlanName'))]",
+                "virtualApplications": [
+                    {
+                        "virtualPath": "/",
+                        "physicalPath": "site\\wwwroot\\public",
+                        "preloadEnabled": false,
+                        "virtualDirectories": null
+                    },
+                    {
+                        "virtualPath": "/deploy",
+                        "physicalPath": "site\\wwwroot\\",
+                        "preloadEnabled": false,
+                        "virtualDirectories": null
+                    }
+                ]
+            },
+            "location": "[parameters('globalResourceLocation')]",
+            "dependsOn": [
+                "[concat('Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]"
+            ]
+        }
+    ],
+    "outputs": {}
+}
