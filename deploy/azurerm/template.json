@@ -73,7 +73,7 @@
                     },
                     {
                         "virtualPath": "/deploy",
-                        "physicalPath": "site\\wwwroot\\",
+                        "physicalPath": "site\\wwwroot",
                         "preloadEnabled": false,
                         "virtualDirectories": null
                     }
