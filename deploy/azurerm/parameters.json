@@ -16,6 +16,9 @@
         },
         "webAppName": {
             "value": "lbwebapp1204"
+        },
+        "webConfigName": {
+            "value": "web"
         }
     }
 }
